@@ -180,11 +180,15 @@ Para analizar con mayor detalle el comportamiento estacional de la serie, se ela
 ```{r}
 #| label: fig-season
 #| fig-cap: "Gráfico estacional de las muertes por ACV en Estados Unidos (1999–2018)"
-## Comportamiento estacional
+# Achica el texto de las etiquetas de los años (probá entre 2 y 3)
+update_geom_defaults("text", list(size = 2.5))
+
 datos_filtrado |>
   gg_season(
     muertes,
-    labels = "both"
+    labels = "both",
+    labels_repel = TRUE,
+    pal = colorRampPalette(c("cadetblue1", "cadetblue4", "#1F3F40"))(20)
   ) +
   labs(
     y = "Cantidad de muertes",
@@ -193,8 +197,7 @@ datos_filtrado |>
   theme_minimal() +
   coord_cartesian(
     clip = "off"
-  ) + 
-  
+  )
 ```
 Se observa que la forma del ciclo estacional se mantiene notablemente estable a lo largo de todo el período: en todos los años, los valores más altos se concentran en los meses de diciembre y enero, mientras que los valores más bajos se registran entre junio y septiembre. Lo que varía entre los distintos años no es la forma de la curva, sino su nivel general, lo cual es consistente con la tendencia en forma de "U" identificada previamente: las curvas correspondientes a los primeros años (1999-2003) y a los últimos (2016-2018) se ubican en niveles más altos, mientras que las curvas de los años centrales (2008-2013) se ubican en niveles más bajos. En síntesis, el gráfico estacional confirma la presencia de un patrón estacional anual marcado y persistente en el tiempo, lo que refuerza la evidencia de no estacionariedad de la serie observada en los análisis anteriores.  
 
