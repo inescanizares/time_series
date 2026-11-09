@@ -275,7 +275,7 @@ datos_filtrado |>
   )
 ```
 
-La Figura 6 muestra un primer coeficiente muy elevado en el rezago 1 (cercano a 0,8), seguido de varios coeficientes significativos de menor magnitud entre los rezagos 2 y 10, con signos alternantes. Se destaca además un coeficiente marcadamente negativo en el rezago 12 (cercano a -0,4), que resulta notablemente mayor en valor absoluto que el resto de los coeficientes a partir del rezago 13, los cuales se ubican mayormente dentro de la banda de significancia o apenas por fuera de ella, salvo un pico aislado cercano al rezago 24. Este comportamiento sugiere que, además de la dependencia de corto plazo reflejada en los primeros rezagos, persiste cierta estructura asociada al componente estacional de la serie, evidenciada por el coeficiente significativo en el rezago 12. En conjunto, el correlograma parcial refuerza la idea de que la serie presenta una estructura de dependencia compleja, consistente con la presencia simultánea de componentes de corto plazo y de estacionalidad, lo que confirma nuevamente que la serie no es estacionaria en su forma original.  
+La @fig-pacf muestra un primer coeficiente muy elevado en el rezago 1 (cercano a 0,8), seguido de varios coeficientes significativos de menor magnitud entre los rezagos 2 y 10, con signos alternantes. Se destaca además un coeficiente marcadamente negativo en el rezago 12 (cercano a -0,4), que resulta notablemente mayor en valor absoluto que el resto de los coeficientes a partir del rezago 13, los cuales se ubican mayormente dentro de la banda de significancia o apenas por fuera de ella, salvo un pico aislado cercano al rezago 24. Este comportamiento sugiere que, además de la dependencia de corto plazo reflejada en los primeros rezagos, persiste cierta estructura asociada al componente estacional de la serie, evidenciada por el coeficiente significativo en el rezago 12. En conjunto, el correlograma parcial refuerza la idea de que la serie presenta una estructura de dependencia compleja, consistente con la presencia simultánea de componentes de corto plazo y de estacionalidad, lo que confirma nuevamente que la serie no es estacionaria en su forma original.  
 
 # Especificación del modelo
 
@@ -306,7 +306,7 @@ ggplot(df_anual, aes(x = media, y = desvio)) +
   theme_minimal()
 ```
 
-La Figura 7 muestra una relación creciente, lo que indica que la variancia depende del nivel de la serie.
+La @fig-media-desvio muestra una relación creciente, lo que indica que la variancia depende del nivel de la serie.
 
 ```{r}
 #| include: false
@@ -340,6 +340,8 @@ ggplot(comparacion, aes(x = media, y = desvio)) +
   facet_wrap(~ serie, scales = "free") +
   theme_minimal()
 ```
+
+ 
  La transformación logarítmica reduce, pero no elimina, esta dependencia. En cambio, la transformación de Box-Cox con $\lambda ≈ −0{,}9$ (estimado por el método de Guerrero) deja el desvío aproximadamente constante respecto de la media, por lo que se adopta para el resto del análisis.  
 
 
@@ -361,8 +363,6 @@ datos_bc |>
   mutate(dif12 = difference(muertes_bc, 12)) |>
   features(dif12, unitroot_ndiffs)
 ```
-
-La prueba indicó que se requiere una diferencia estacional. Sin embargo, al observar la serie con diferencia estacional (@fig-dif-estacional), se ve que su nivel se desplaza a lo largo del tiempo, con un tramo de valores altos entre 2013 y 2016, y que su función de autocorrelación decae lentamente, con valores positivos y significativos en casi todos los rezagos. Esto indica que persiste una tendencia. Coincidentemente, la prueba para diferencias regulares aplicada sobre esta serie indicó una diferencia adicional. 
 
 ```{r}
 grafico_dif <- function(d, ylab) {
@@ -387,6 +387,16 @@ grafico_dif <- function(d, ylab) {
 ```
 
 ```{r}
+#| label: fig-dif-regular
+#| fig-cap: "Serie transformada con una diferencia regular, con su FAC y FACP"
+
+datos_bc |>
+  mutate(dif = difference(muertes_bc, 1)) |>
+  grafico_dif("Serie con diferencia regular")
+```
+
+
+```{r}
 #| label: fig-dif-estacional
 #| fig-cap: "Serie transformada con una diferencia estacional, con su FAC y FACP"
 #| fig-height: 5
@@ -394,8 +404,7 @@ datos_bc |>
   mutate(dif = difference(muertes_bc, 12)) |>
   grafico_dif("Serie con diferencia estacional")
 ``` 
-
-Al aplicar ambas diferencias (@fig-dif-ambas), la serie oscila alrededor de cero con variabilidad aproximadamente constante y sin tendencia aparente. Además, la autocorrelación en el rezago 1 es cercana a $-0{,}3$, lejos del valor de $-0{,}5$ a partir del cual suele sospecharse sobrediferenciación. Se adopta entonces $d = 1$ y $D = 1$.
+La prueba indicó que se requiere una diferencia estacional. Sin embargo, al observar la serie con diferencia estacional (@fig-dif-estacional), se ve que su nivel se desplaza a lo largo del tiempo, con un tramo de valores altos entre 2013 y 2016, y que su función de autocorrelación decae lentamente, con valores positivos y significativos en casi todos los rezagos. Esto indica que persiste una tendencia. Coincidentemente, la prueba para diferencias regulares aplicada sobre esta serie indicó una diferencia adicional. 
 
 ```{r}
 #| label: fig-dif-ambas
@@ -405,6 +414,7 @@ datos_bc |>
   mutate(dif = difference(difference(muertes_bc, 12), 1)) |>
   grafico_dif("Serie con diferencia regular y estacional")
 ```
+Al aplicar ambas diferencias (@fig-dif-ambas), la serie oscila alrededor de cero con variabilidad aproximadamente constante y sin tendencia aparente. Además, la autocorrelación en el rezago 1 es cercana a $-0{,}3$, lejos del valor de $-0{,}5$ a partir del cual suele sospecharse sobrediferenciación. Se adopta entonces $d = 1$ y $D = 1$.
 
 ## Identificación de modelos candidatos
 
@@ -413,7 +423,9 @@ A partir de la FAC y la FACP de la serie diferenciada (@fig-dif-ambas):
 - En la FAC hay un pico negativo en el rezago 1 y otro más marcado en el rezago 12, con valores pequeños alrededor de los rezagos 11 y 13. Es un patrón característico de un término de promedios móviles no estacional de orden 1 y de uno estacional de orden 1.
 - En la FACP los rezagos 1 y 2 son negativos y significativos, y en la parte estacional los rezagos 12 y 24 son negativos con magnitud decreciente. Esto es consistente con la parte de promedios móviles estacional y sugiere que podría hacer falta un segundo término de promedios móviles no estacional.
 
-Se proponen entonces tres modelos candidatos, $\text{ARIMA}(p,d,q)(P,D,Q)_{12}$: (1) $(0,1,1)(0,1,1)$, (2) $(0,1,2)(0,1,1)$ y (3) $(2,1,0)(2,1,0)$, este último como alternativa puramente autorregresiva sugerida por la FACP. Se incluye además, como referencia, el modelo seleccionado por el algoritmo automático de búsqueda.
+Se proponen entonces tres modelos candidatos, $\text{SARIMA}(p,d,q)(P,D,Q)_{12}$: (1) $(0,1,1)(0,1,1)$, (2) $(0,1,2)(0,1,1)$ y (3) $(2,1,0)(2,1,0)$, este último como alternativa puramente autorregresiva sugerida por la FACP. Se incluye además, como referencia, el modelo seleccionado por el algoritmo automático de búsqueda. 
+
+Adicionalmente, se incorpora un cuarto modelo, \((0,1,1)(2,0,2)_{12}\), que contempla únicamente una diferencia regular. Su estructura se define tomando como referencia los órdenes autorregresivos y de promedios móviles del modelo seleccionado automáticamente, pero eliminando la diferenciación estacional. De esta manera, se busca evaluar si la dependencia estacional puede ser explicada mediante los términos AR y MA, sin necesidad de aplicar una diferencia estacional.
 
 # Ajuste y diagnóstico
 
@@ -422,9 +434,18 @@ Los modelos se estimaron por máxima verosimilitud sobre la serie transformada. 
 ```{r}
 fit <- datos_filtrado |>
   model(
-    m1   = ARIMA(box_cox(muertes, lambda) ~ 0 + pdq(0,1,1) + PDQ(0,1,1)),
-    m2   = ARIMA(box_cox(muertes, lambda) ~ 0 + pdq(0,1,2) + PDQ(0,1,1)),
-    m3   = ARIMA(box_cox(muertes, lambda) ~ 0 + pdq(2,1,0) + PDQ(2,1,0)),
+    m1 = ARIMA(box_cox(muertes, lambda) ~
+                 0 + pdq(0,1,1) + PDQ(0,1,1)),
+
+    m2 = ARIMA(box_cox(muertes, lambda) ~
+                 0 + pdq(0,1,2) + PDQ(0,1,1)),
+
+    m3 = ARIMA(box_cox(muertes, lambda) ~
+                 0 + pdq(2,1,0) + PDQ(2,1,0)),
+
+    m4 = ARIMA(box_cox(muertes, lambda) ~
+                 0 + pdq(0,1,1) + PDQ(2,0,2)),
+
     auto = ARIMA(box_cox(muertes, lambda))
   )
 ```
@@ -438,12 +459,15 @@ glance(fit) |>
     m1   = "ARIMA(0,1,1)(0,1,1)[12]",
     m2   = "ARIMA(0,1,2)(0,1,1)[12]",
     m3   = "ARIMA(2,1,0)(2,1,0)[12]",
+    m4   = "ARIMA(0,1,1)(2,0,2)[12]",
     auto = "Automático: ARIMA(0,1,1)(2,1,2)[12]")) |>
   select(Modelo, AICc, BIC) |>
   kable(digits = 2, align = "c")
 ```
 
-El modelo $\text{ARIMA}(0,1,2)(0,1,1)_{12}$ presenta los menores valores de AICc y BIC. El modelo automático, que resultó ser un $\text{ARIMA}(0,1,1)(2,1,2)_{12}$ (salida completa en el Apéndice), es más complejo y casi todos sus coeficientes estacionales no son significativos, lo que sugiere sobreparametrización. El modelo autorregresivo es el de peor ajuste.
+Al comparar los modelos candidatos mediante los criterios AICc y BIC, se observa que el modelo ARIMA(0,1,1)(2,0,2)[12], que incorpora únicamente una diferencia regular, presenta los menores valores en ambos criterios. La diferencia respecto de los restantes modelos es considerable, lo que proporciona evidencia a favor de esta especificación. Este resultado sugiere que la dependencia estacional puede ser explicada mediante componentes autorregresivos y de promedios móviles estacionales, sin necesidad de aplicar una diferenciación estacional adicional.
+
+No obstante, la selección definitiva del modelo queda sujeta al análisis de los residuos y a la verificación de los supuestos correspondientes.
 
 ```{r}
 inicio <- yearmonth("2000 Feb")   # primera observación con residuo válido
@@ -510,6 +534,55 @@ graf_normalidad <- function(nombre) {
 }
 ```
 
+Se realiza el ajuste para el modelo $\text{SARIMA}(0,1,1)(2,0,2)_{12}$ sobre la serie transformada $Z_t$:
+
+$$(1-B)(1-B^{12})Z_t = (1-\theta_1 B)(1-\Theta_1 B^{12})\,a_t,$$ ESTA MAL LO TENGO QUE CAMBIAR
+
+donde $Z_t$ es la serie transformada mediante Box-Cox con $\hat{\lambda} = -0{,}90$ y $a_t$ es ruido blanco. De esta forma, el modelo estimado queda:
+
+$$(1-B)(1-B^{12})Z_t = (1-0{,}5526B)(1-0{,}7872B^{12})\,a_t.$$
+
+Se presenta una tabla con los valores de los coeficientes estimados, acompañados de un IC para probar su significación.
+
+```{r}
+#| label: tbl-coef-m4
+#| tbl-cap: "Coeficientes estimados del modelo ARIMA(0,1,1)(2,0,2)[12]"
+tab_coef("m4")
+```
+
+Dado que ningún intervalo contiene al cero, se concluye que los dos parámetros son significativos con un nivel de significación del 5%. Además, el coeficiente estacional ($-0{,}79$) se aleja de $-1$, por lo que el modelo es invertible.
+
+Se procede con el análisis de los residuos, excluyendo las primeras 13 observaciones, ya que dependen de las condiciones iniciales de la diferenciación. Se inicia con el test de Portmanteau para verificar la hipótesis de que los residuos son ruido blanco:
+
+```{r}
+#| label: tbl-port-m1
+#| tbl-cap: "Test de Portmanteau de los residuos del modelo ARIMA(0,1,1)(2,0,2)[12]"
+tab_portmanteau("m4")
+```
+
+El test rechaza la hipótesis de ruido blanco, con un nivel de significación del 5%, en los rezagos 6 (p-value = 0,017). En los rezagos 12, 18 y 24 no se rechaza, aunque los p-values (0.197, 0.473 y 0.637) son cercanos al umbral. Esto indica que los residuos conservan autocorrelación que el modelo no logra explicar.
+
+```{r}
+#| label: fig-res-m4
+#| fig-cap: "Residuos estandarizados del modelo ARIMA(0,1,1)(2,0,2)[12], con su FAC y FACP"
+graf_residuos("m4")
+```
+
+Los residuos estandarizados oscilan alrededor de cero con variabilidad aproximadamente constante, aunque se observan dos valores por fuera del intervalo $(-3, 3)$ al inicio de la serie. En la FAC y la FACP el rezago 1 supera claramente la banda de significancia, y los rezagos 10 y 11 se ubican en el límite. Esto es coherente con el resultado del test de Portmanteau: persiste dependencia de corto plazo no capturada por el modelo.
+
+```{r}
+#| label: fig-norm-m4
+#| fig-cap: "Histograma y QQ-plot de los residuos estandarizados del modelo ARIMA(0,1,1)(2,0,2)[12]"
+graf_normalidad("m4")
+```
+
+```{r}
+#| include: false
+# Shapiro-Wilk
+shapiro.test(res_std("m4")$est)
+```
+
+El histograma se aproxima a una distribución normal, con una cola izquierda algo más pesada. En el QQ-plot los puntos siguen la recta, salvo en el extremo inferior, donde se separan los valores atípicos mencionados.  Además, se realizó el test de Shapiro-Wilk sobre los residuos para evaluar normalidad, el cuál no rechaza la hipótesis (p-value = 0,34).
 
 Se realiza el ajuste para el modelo $\text{ARIMA}(0,1,2)(0,1,1)_{12}$ sobre la serie transformada $Z_t$:
 
@@ -520,7 +593,7 @@ donde $Z_t$ es la serie transformada mediante Box-Cox con $\hat{\lambda} = -0{,}
 $$(1-B)(1-B^{12})Z_t = (1-0{,}4580B-0{,}1598B^2)(1-0{,}7814B^{12})\,a_t.$$
 ```{r}
 #| label: tbl-coef-m2
-#| tbl-cap: "Coeficientes estimados del modelo ARIMA(0,1,2)(0,1,1)[12]"
+#| tbl-cap: "Coeficientes estimados del modelo SARIMA(0,1,2)(0,1,1)[12]"
 tab_coef("m2")
 ```
 
@@ -528,13 +601,16 @@ tab_coef("m2")
  
 Para el diagnóstico de los residuos se excluyeron las primeras 13 observaciones, cuyos residuos dependen de las condiciones iniciales de la diferenciación. 
 
+Se procede entonces con el análisis de los residuos para este primer modelo, iniciando con el Test de Portmanteau para verificar si la hipótesis de que los mismos son ruido blanco se cumple:
+
 ```{r}
 #| label: tbl-port-m2
-#| tbl-cap: "Test de Portmanteau de los residuos del modelo ARIMA(0,1,2)(0,1,1)[12]"
+#| tbl-cap: "Test de Portmanteau de los residuos del modelo SARIMA(0,1,2)(0,1,1)[12]"
 # Portmanteau (Tabla)
 tab_portmanteau("m2")
 ```
-El test de Portmanteau no rechaza la hipótesis de ruido blanco en ninguno de los rezagos evaluados (Tabla @tbl-port-m2), todos con p-values mayores a 0,05.
+Los valores del test muestran que ningún p-value es significativo para ninguno de los rezagos evaluados (todos mayores a 0.05), por lo que los residuos se comportan como ruido blanco y no presentan autocorrelación significativa. 
+
 ```{r}
 #| label: fig-res-m2
 #| fig-cap: "Residuos estandarizados del modelo ARIMA(0,1,2)(0,1,1)[12], con su FAC y FACP"
@@ -551,82 +627,75 @@ Los residuos estandarizados (Figura @fig-res-m2) oscilan alrededor de cero con v
 graf_normalidad("m2")
 ```
 
-El histograma y el QQ-plot (Figura @fig-norm-m2) muestran una distribución aproximadamente normal, con una cola izquierda algo más pesada debida a los valores extremos mencionados. Además, se realizó el test de Shapiro-Wilk, en donde se rechaza la hipótesis de normalidad de los residuos (p-value = 0,0006). Este apartamiento se concentra en la cola izquierda y se debe principalmente a dos observaciones atípicas, correspondientes a marzo de 2000 y enero de 2001, cuyos residuos estandarizados superan en valor absoluto el valor 3. Dado que el test de Portmanteau no detecta autocorrelación remanente, la falta de normalidad no afecta los pronósticos puntuales, pero sí podría afectar la exactitud de los intervalos de pronóstico, que se construyen bajo el supuesto de normalidad. 
-
 ```{r}
 #| include: false
 # Shapiro-Wilk
 shapiro.test(res_std("m2")$est)
 ``` 
 
-
-Se realiza el ajuste para el modelo $\text{ARIMA}(0,1,1)(0,1,1)_{12}$ sobre la serie transformada $Z_t$:
-
-$$(1-B)(1-B^{12})Z_t = (1-\theta_1 B)(1-\Theta_1 B^{12})\,a_t,$$
-
-donde $Z_t$ es la serie transformada mediante Box-Cox con $\hat{\lambda} = -0{,}90$ y $a_t$ es ruido blanco. De esta forma, el modelo estimado queda:
-
-$$(1-B)(1-B^{12})Z_t = (1-0{,}5526B)(1-0{,}7872B^{12})\,a_t.$$
-
-Se presenta una tabla con los valores de los coeficientes estimados, acompañados de un IC para probar su significación.
-
-```{r}
-#| label: tbl-coef-m1
-#| tbl-cap: "Coeficientes estimados del modelo ARIMA(0,1,1)(0,1,1)[12]"
-tab_coef("m1")
-```
-
-Dado que ningún intervalo contiene al cero, se concluye que los dos parámetros son significativos con un nivel de significación del 5%. Además, el coeficiente estacional ($-0{,}79$) se aleja de $-1$, por lo que el modelo es invertible.
-
-Se procede con el análisis de los residuos, excluyendo las primeras 13 observaciones, ya que dependen de las condiciones iniciales de la diferenciación. Se inicia con el test de Portmanteau para verificar la hipótesis de que los residuos son ruido blanco:
-
-```{r}
-#| label: tbl-port-m1
-#| tbl-cap: "Test de Portmanteau de los residuos del modelo ARIMA(0,1,1)(0,1,1)[12]"
-tab_portmanteau("m1")
-```
-
-El test rechaza la hipótesis de ruido blanco, con un nivel de significación del 5%, en los rezagos 6 (p-value = 0,029) y 12 (p-value = 0,014). En los rezagos 18 y 24 no se rechaza, aunque los p-values (0,081 y 0,094) son cercanos al umbral. Esto indica que los residuos conservan autocorrelación que el modelo no logra explicar.
-
-```{r}
-#| label: fig-res-m1
-#| fig-cap: "Residuos estandarizados del modelo ARIMA(0,1,1)(0,1,1)[12], con su FAC y FACP"
-graf_residuos("m1")
-```
-
-Los residuos estandarizados oscilan alrededor de cero con variabilidad aproximadamente constante, aunque se observan dos valores por fuera del intervalo $(-3, 3)$ al inicio de la serie. En la FAC y la FACP el rezago 1 supera claramente la banda de significancia, y los rezagos 10 y 11 se ubican en el límite. Esto es coherente con el resultado del test de Portmanteau: persiste dependencia de corto plazo no capturada por el modelo.
-
-```{r}
-#| label: fig-norm-m1
-#| fig-cap: "Histograma y QQ-plot de los residuos estandarizados del modelo ARIMA(0,1,1)(0,1,1)[12]"
-graf_normalidad("m1")
-```
-
-El histograma se aproxima a una distribución normal, con una cola izquierda algo más pesada. En el QQ-plot los puntos siguen la recta, salvo en el extremo inferior, donde se separan los valores atípicos mencionados.  Además, se realizó el test de Shapiro-Wilk sobre los residuos para evaluar normalidad, el cuál rechazamla hipótesis (p-value = 0,0010). Este apartamiento se concentra en la cola izquierda y se debe a las observaciones atípicas del inicio de la serie. 
-
-```{r}
-#| include: false
-# Shapiro-Wilk
-shapiro.test(res_std("m1")$est)
-```
-
-En síntesis, aunque los coeficientes son significativos, este modelo no pasa el diagnóstico: los residuos presentan autocorrelación remanente y no son normales.
+El histograma y el QQ-plot (Figura @fig-norm-m2) muestran una distribución aproximadamente normal, con una cola izquierda algo más pesada debida a los valores extremos mencionados. Además, se realizó el test de Shapiro-Wilk, en donde se rechaza la hipótesis de normalidad de los residuos (p-value = 0,0006). Este apartamiento se concentra en la cola izquierda y se debe principalmente a dos observaciones atípicas, correspondientes a marzo de 2000 y enero de 2001, cuyos residuos estandarizados superan en valor absoluto el valor 3. Dado que el test de Portmanteau no detecta autocorrelación remanente, la falta de normalidad no afecta los pronósticos puntuales, pero sí podría afectar la exactitud de los intervalos de pronóstico, que se construyen bajo el supuesto de normalidad. 
 
 Se procede a comparar ambos modelos considerados:
 
 ```{r}
 #| label: tbl-comparacion
 #| tbl-cap: "Comparación de los modelos SARIMA considerados"
-glance(fit |> select(m1, m2)) |>
+glance(fit |> select(m4, m2)) |>
   select(.model, AICc, BIC) |>
-  left_join(accuracy(fit |> select(m1, m2)) |> select(.model, MAPE), by = ".model") |>
+  left_join(accuracy(fit |> select(m4, m2)) |> select(.model, MAPE), by = ".model") |>
   mutate(.model = recode(.model,
-                         m1 = "ARIMA(0,1,1)(0,1,1)[12]",
+                         m4 = "ARIMA(0,1,1)(2,0,2)[12]",
                          m2 = "ARIMA(0,1,2)(0,1,1)[12]")) |>
   kable(digits = 2, col.names = c("Modelo", "AICc", "BIC", "MAPE (%)"), align = "c")
 
 ```
 
-En síntesis, el modelo $\text{ARIMA}(0,1,2)(0,1,1)_{12}$ presenta coeficientes significativos y residuos sin autocorrelación remanente, con la salvedad de la falta de normalidad debida a dos observaciones atípicas.
+En síntesis, el modelo $\text{SARIMA}(0,1,2)(0,1,1)_{12}$ presenta coeficientes significativos y residuos sin autocorrelación remanente, con la salvedad de la falta de normalidad debida a dos observaciones atípicas.
 
-Al comparar ambos modelos (Tabla @tbl-comparacion), el $\text{ARIMA}(0,1,2)(0,1,1)_{12}$ presenta un AICc menor (diferencia de aproximadamente 3,5 puntos), mientras que el BIC y el MAPE son prácticamente equivalentes. Dado que los criterios de información no distinguen claramente entre ambos, el diagnóstico de los residuos resulta determinante: el $\text{ARIMA}(0,1,2)(0,1,1)_{12}$ es el único cuyos residuos no muestran autocorrelación remanente, y todos sus coeficientes son significativos. Por lo tanto, se lo selecciona como modelo final para la etapa de pronóstico.
+Al comparar ambos modelos (Tabla @tbl-comparacion), el $\text{SARIMA}(0,1,2)(0,1,1)_{12}$ presenta un AICc menor (diferencia de aproximadamente 3,5 puntos), mientras que el BIC y el MAPE son prácticamente equivalentes. Dado que los criterios de información no distinguen claramente entre ambos, el diagnóstico de los residuos resulta determinante: el $\text{SARIMA}(0,1,2)(0,1,1)_{12}$ es el único cuyos residuos no muestran autocorrelación remanente, y todos sus coeficientes son significativos. Por lo tanto, se lo selecciona como modelo final para la etapa de pronóstico. 
+
+
+# Evaluación predictiva del modelo seleccionado
+
+Para la etapa de pronósticos, se ajusta el modelo SARIMA seleccionado utilizando los datos disponibles hasta diciembre de 2018 y se generan predicciones para las doce observaciones del año 2019, que constituyen la muestra de evaluación. Además, se comparan los valores pronosticados con los datos reales de 2019 a fin de evaluar el desempeño del modelo y analizar su capacidad predictiva. 
+
+```{r}
+# Los 12 datos reservados (2019)
+datos_test <- datos |>
+  filter_index("2019 Jan" ~ "2019 Dec")
+
+# Pronóstico del modelo seleccionado
+fc <- fit |>
+  select(m4) |>
+  forecast(h = nrow(datos_test))
+
+```
+
+```{r}
+# Tabla de pronósticos 
+#| label: tbl-pronosticos
+#| tbl-cap: "Pronósticos del modelo ARIMA(0,1,2)(0,1,1)[12] para 2019"
+tabla_pronosticos <- fc |>
+  hilo(level = 95) |>
+  unpack_hilo(`95%`) |>
+  as_tibble() |>
+  left_join(
+    datos_test |> as_tibble() |> rename(real = muertes),
+    by = "Month"
+  ) |>
+  transmute(
+    Mes = format(as.Date(Month), "%B"),
+    Valor_real = real,
+    Pronostico = round(.mean),
+    IC_95 = paste0("(", round(`95%_lower`), "; ", round(`95%_upper`), ")")
+  )
+
+kable(tabla_pronosticos,
+      col.names = c("Mes", "Valor real", "Pronóstico", "IC del 95%"),
+      align = "c",
+      format.args = list(
+  big.mark = ".",
+  decimal.mark = ","
+))
+```
+

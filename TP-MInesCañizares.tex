@@ -446,22 +446,22 @@ muertes por ACV}
 
 \end{figure}%
 
-La Figura 6 muestra un primer coeficiente muy elevado en el rezago 1
-(cercano a 0,8), seguido de varios coeficientes significativos de menor
-magnitud entre los rezagos 2 y 10, con signos alternantes. Se destaca
-además un coeficiente marcadamente negativo en el rezago 12 (cercano a
--0,4), que resulta notablemente mayor en valor absoluto que el resto de
-los coeficientes a partir del rezago 13, los cuales se ubican mayormente
-dentro de la banda de significancia o apenas por fuera de ella, salvo un
-pico aislado cercano al rezago 24. Este comportamiento sugiere que,
-además de la dependencia de corto plazo reflejada en los primeros
-rezagos, persiste cierta estructura asociada al componente estacional de
-la serie, evidenciada por el coeficiente significativo en el rezago 12.
-En conjunto, el correlograma parcial refuerza la idea de que la serie
-presenta una estructura de dependencia compleja, consistente con la
-presencia simultánea de componentes de corto plazo y de estacionalidad,
-lo que confirma nuevamente que la serie no es estacionaria en su forma
-original.
+La Figura~\ref{fig-pacf} muestra un primer coeficiente muy elevado en el
+rezago 1 (cercano a 0,8), seguido de varios coeficientes significativos
+de menor magnitud entre los rezagos 2 y 10, con signos alternantes. Se
+destaca además un coeficiente marcadamente negativo en el rezago 12
+(cercano a -0,4), que resulta notablemente mayor en valor absoluto que
+el resto de los coeficientes a partir del rezago 13, los cuales se
+ubican mayormente dentro de la banda de significancia o apenas por fuera
+de ella, salvo un pico aislado cercano al rezago 24. Este comportamiento
+sugiere que, además de la dependencia de corto plazo reflejada en los
+primeros rezagos, persiste cierta estructura asociada al componente
+estacional de la serie, evidenciada por el coeficiente significativo en
+el rezago 12. En conjunto, el correlograma parcial refuerza la idea de
+que la serie presenta una estructura de dependencia compleja,
+consistente con la presencia simultánea de componentes de corto plazo y
+de estacionalidad, lo que confirma nuevamente que la serie no es
+estacionaria en su forma original.
 
 \section{Especificación del modelo}\label{especificaciuxf3n-del-modelo}
 
@@ -486,8 +486,8 @@ anual}
 
 \end{figure}%
 
-La Figura 7 muestra una relación creciente, lo que indica que la
-variancia depende del nivel de la serie.
+La Figura~\ref{fig-media-desvio} muestra una relación creciente, lo que
+indica que la variancia depende del nivel de la serie.
 
 \begin{figure}[H]
 
@@ -518,15 +518,6 @@ análisis gráfico de la serie y de sus funciones de autocorrelación. Dada
 la marcada estacionalidad anual, se aplicó primero la diferencia
 estacional, siguiendo la recomendación de Hyndman y Athanasopoulos.
 
-La prueba indicó que se requiere una diferencia estacional. Sin embargo,
-al observar la serie con diferencia estacional
-(Figura~\ref{fig-dif-estacional}), se ve que su nivel se desplaza a lo
-largo del tiempo, con un tramo de valores altos entre 2013 y 2016, y que
-su función de autocorrelación decae lentamente, con valores positivos y
-significativos en casi todos los rezagos. Esto indica que persiste una
-tendencia. Coincidentemente, la prueba para diferencias regulares
-aplicada sobre esta serie indicó una diferencia adicional.
-
 \begin{figure}
 
 \centering{
@@ -540,12 +531,14 @@ estacional, con su FAC y FACP}
 
 \end{figure}%
 
-Al aplicar ambas diferencias (Figura~\ref{fig-dif-ambas}), la serie
-oscila alrededor de cero con variabilidad aproximadamente constante y
-sin tendencia aparente. Además, la autocorrelación en el rezago 1 es
-cercana a \(-0{,}3\), lejos del valor de \(-0{,}5\) a partir del cual
-suele sospecharse sobrediferenciación. Se adopta entonces \(d = 1\) y
-\(D = 1\).
+La prueba indicó que se requiere una diferencia estacional. Sin embargo,
+al observar la serie con diferencia estacional
+(Figura~\ref{fig-dif-estacional}), se ve que su nivel se desplaza a lo
+largo del tiempo, con un tramo de valores altos entre 2013 y 2016, y que
+su función de autocorrelación decae lentamente, con valores positivos y
+significativos en casi todos los rezagos. Esto indica que persiste una
+tendencia. Coincidentemente, la prueba para diferencias regulares
+aplicada sobre esta serie indicó una diferencia adicional.
 
 \begin{figure}
 
@@ -559,6 +552,13 @@ suele sospecharse sobrediferenciación. Se adopta entonces \(d = 1\) y
 regular y una estacional, con su FAC y FACP}
 
 \end{figure}%
+
+Al aplicar ambas diferencias (Figura~\ref{fig-dif-ambas}), la serie
+oscila alrededor de cero con variabilidad aproximadamente constante y
+sin tendencia aparente. Además, la autocorrelación en el rezago 1 es
+cercana a \(-0{,}3\), lejos del valor de \(-0{,}5\) a partir del cual
+suele sospecharse sobrediferenciación. Se adopta entonces \(d = 1\) y
+\(D = 1\).
 
 \subsection{Identificación de modelos
 candidatos}\label{identificaciuxf3n-de-modelos-candidatos}
@@ -582,7 +582,7 @@ A partir de la FAC y la FACP de la serie diferenciada
 \end{itemize}
 
 Se proponen entonces tres modelos candidatos,
-\(\text{ARIMA}(p,d,q)(P,D,Q)_{12}\): (1) \((0,1,1)(0,1,1)\), (2)
+\(\text{SARIMA}(p,d,q)(P,D,Q)_{12}\): (1) \((0,1,1)(0,1,1)\), (2)
 \((0,1,2)(0,1,1)\) y (3) \((2,1,0)(2,1,0)\), este último como
 alternativa puramente autorregresiva sugerida por la FACP. Se incluye
 además, como referencia, el modelo seleccionado por el algoritmo
@@ -618,12 +618,11 @@ ARIMA(2,1,0)(2,1,0){[}12{]} & -4853.04 & -4836.19 \\
 
 }
 
-El modelo \(\text{ARIMA}(0,1,2)(0,1,1)_{12}\) presenta los menores
+El modelo \(\text{SARIMA}(0,1,2)(0,1,1)_{12}\) presenta los menores
 valores de AICc y BIC. El modelo automático, que resultó ser un
-\(\text{ARIMA}(0,1,1)(2,1,2)_{12}\) (salida completa en el Apéndice), es
-más complejo y casi todos sus coeficientes estacionales no son
-significativos, lo que sugiere sobreparametrización. El modelo
-autorregresivo es el de peor ajuste.
+\(\text{SARIMA}(0,1,1)(2,1,2)_{12}\), es más complejo y casi todos sus
+coeficientes estacionales no son significativos, lo que sugiere
+sobreparametrización. El modelo autorregresivo es el de peor ajuste.
 
 Se realiza el ajuste para el modelo \(\text{ARIMA}(0,1,2)(0,1,1)_{12}\)
 sobre la serie transformada \(Z_t\):
@@ -646,7 +645,7 @@ modelo estimado queda:
   >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2329}}@{}}
 
 \caption{\label{tbl-coef-m2}Coeficientes estimados del modelo
-ARIMA(0,1,2)(0,1,1){[}12{]}}
+SARIMA(0,1,2)(0,1,1){[}12{]}}
 
 \tabularnewline
 
@@ -683,12 +682,16 @@ Para el diagnóstico de los residuos se excluyeron las primeras 13
 observaciones, cuyos residuos dependen de las condiciones iniciales de
 la diferenciación.
 
+Se procede entonces con el análisis de los residuos para este primer
+modelo, iniciando con el Test de Portmanteau para verificar si la
+hipótesis de que los mismos son ruido blanco se cumple:
+
 {
 
 \begin{longtable}[]{@{}cccc@{}}
 
 \caption{\label{tbl-port-m2}Test de Portmanteau de los residuos del
-modelo ARIMA(0,1,2)(0,1,1){[}12{]}}
+modelo SARIMA(0,1,2)(0,1,1){[}12{]}}
 
 \tabularnewline
 
@@ -707,9 +710,10 @@ Rezago & Estadística & gl & p-value \\
 
 }
 
-El test de Portmanteau no rechaza la hipótesis de ruido blanco en
-ninguno de los rezagos evaluados (Tabla Tabla~\ref{tbl-port-m2}), todos
-con p-values mayores a 0,05.
+Los valores del test muestran que ningún p-value es significativo para
+ninguno de los rezagos evaluados (todos mayores a 0.05), por lo que los
+residuos se comportan como ruido blanco y no presentan autocorrelación
+significativa.
 
 \begin{figure}
 
@@ -758,7 +762,7 @@ no afecta los pronósticos puntuales, pero sí podría afectar la exactitud
 de los intervalos de pronóstico, que se construyen bajo el supuesto de
 normalidad.
 
-Se realiza el ajuste para el modelo \(\text{ARIMA}(0,1,1)(0,1,1)_{12}\)
+Se realiza el ajuste para el modelo \(\text{SARIMA}(0,1,1)(0,1,1)_{12}\)
 sobre la serie transformada \(Z_t\):
 
 \[(1-B)(1-B^{12})Z_t = (1-\theta_1 B)(1-\Theta_1 B^{12})\,a_t,\]
@@ -919,20 +923,53 @@ ARIMA(0,1,2)(0,1,1){[}12{]} & -4874.32 & -4860.80 & 3.57 \\
 
 }
 
-En síntesis, el modelo \(\text{ARIMA}(0,1,2)(0,1,1)_{12}\) presenta
+En síntesis, el modelo \(\text{SARIMA}(0,1,2)(0,1,1)_{12}\) presenta
 coeficientes significativos y residuos sin autocorrelación remanente,
 con la salvedad de la falta de normalidad debida a dos observaciones
 atípicas.
 
 Al comparar ambos modelos (Tabla Tabla~\ref{tbl-comparacion}), el
-\(\text{ARIMA}(0,1,2)(0,1,1)_{12}\) presenta un AICc menor (diferencia
+\(\text{SARIMA}(0,1,2)(0,1,1)_{12}\) presenta un AICc menor (diferencia
 de aproximadamente 3,5 puntos), mientras que el BIC y el MAPE son
 prácticamente equivalentes. Dado que los criterios de información no
 distinguen claramente entre ambos, el diagnóstico de los residuos
-resulta determinante: el \(\text{ARIMA}(0,1,2)(0,1,1)_{12}\) es el único
-cuyos residuos no muestran autocorrelación remanente, y todos sus
+resulta determinante: el \(\text{SARIMA}(0,1,2)(0,1,1)_{12}\) es el
+único cuyos residuos no muestran autocorrelación remanente, y todos sus
 coeficientes son significativos. Por lo tanto, se lo selecciona como
 modelo final para la etapa de pronóstico.
+
+\section{Evaluación predictiva del modelo
+seleccionado}\label{evaluaciuxf3n-predictiva-del-modelo-seleccionado}
+
+Para la etapa de pronósticos, se ajusta el modelo SARIMA seleccionado
+utilizando los datos disponibles hasta diciembre de 2018 y se generan
+predicciones para las doce observaciones del año 2019, que constituyen
+la muestra de evaluación. Además, se comparan los valores pronosticados
+con los datos reales de 2019 a fin de evaluar el desempeño del modelo y
+analizar su capacidad predictiva.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}cccc@{}}
+\toprule\noalign{}
+Mes & Valor real & Pronóstico & IC del 95\% \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+enero & 13.447 & NA & (NA; 3434) \\
+febrero & 12.125 & NA & (NA; 2985) \\
+marzo & 13.433 & NA & (NA; 2909) \\
+abril & 12.443 & NA & (NA; 2743) \\
+mayo & 12.232 & NA & (NA; 2637) \\
+junio & 11.556 & NA & (NA; 2508) \\
+julio & 11.870 & NA & (NA; 2444) \\
+agosto & 11.816 & NA & (NA; 2378) \\
+septiembre & 11.752 & NA & (NA; 2303) \\
+octubre & 12.693 & NA & (NA; 2285) \\
+noviembre & 12.955 & NA & (NA; 2236) \\
+diciembre & 13.683 & NA & (NA; 2217) \\
+\end{longtable}
+}
 
 
 
