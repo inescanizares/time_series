@@ -237,14 +237,14 @@ en cuestión de minutos.
 
 El ACV es uno de los principales problemas de salud pública a nivel
 mundial. Es una de las principales causas de muerte y, entre quienes
-sobreviven, una de las principales causas de discapacidad a largo plazo,
-ya que puede dejar secuelas como parálisis, dificultades para hablar o
+sobreviven, una causa frecuente de discapacidad a largo plazo, ya que
+puede dejar secuelas como parálisis, dificultades para hablar o
 problemas cognitivos. Además, es una enfermedad estrechamente
 relacionada con factores que varían a lo largo del año, como la presión
 arterial y la temperatura ambiente, lo que la convierte en un fenómeno
 interesante para analizar desde una perspectiva temporal: ¿la cantidad
 de muertes por esta causa se mantiene estable a lo largo de los años, o
-cambia? ¿Existen ciertas épocas del año donde el riesgo es mayor?
+cambia? ¿Existen ciertas épocas del año en las que el riesgo es mayor?
 
 Entender cómo evoluciona la mortalidad por ACV a través del tiempo es
 relevante no solo desde el punto de vista médico, sino también para la
@@ -258,16 +258,20 @@ cantidad de muertes por ACV en Estados Unidos entre los años 1999 y
 2019, utilizando datos públicos provenientes de CDC WONDER, una base de
 datos oficial del gobierno estadounidense que recopila estadísticas
 vitales del país. El objetivo es describir el comportamiento de esta
-serie a lo largo del tiempo e identificar si existen patrones
+serie a lo largo del tiempo, identificar si existen patrones
 recurrentes, como tendencias de largo plazo o variaciones estacionales
-asociadas a las distintas épocas del año.
+asociadas a las distintas épocas del año, y ajustar un modelo SARIMA que
+permita pronosticar. Para eso, el modelo se ajusta con los datos de 1999
+a 2018 y se reservan los doce meses de 2019 para evaluar su capacidad
+predictiva.
 
 \section{Análisis descriptivo de la serie
 temporal}\label{anuxe1lisis-descriptivo-de-la-serie-temporal}
 
-Se presenta la serie temporal de las muertes por ACV mensual en Estados
-Unidos durante el período 1999--2018. El gráfico permite visualizar de
-manera global cómo se ha comportado la variable en el tiempo.
+Se presenta la serie temporal de las muertes mensuales por ACV en
+Estados Unidos durante el período 1999-2018 (Figura~\ref{fig-serie}). El
+gráfico permite visualizar de manera global cómo se comportó la variable
+en el tiempo.
 
 \begin{figure}
 
@@ -287,22 +291,20 @@ periodicidad mensual, con 12 observaciones por año. En cuanto a la
 tendencia, no se observa un comportamiento uniforme a lo largo de todo
 el período: entre 1999 y 2010 se registra un descenso sostenido en la
 cantidad de muertes, mientras que a partir de 2011 la serie comienza a
-mostrar una recuperación progresiva, con un crecimiento que se mantiene
-hasta el final del período en 2018. Este patrón refleja un cambio de
-dirección en la tendencia, describiendo una forma de ``U'' a lo largo de
-los veinte años analizados, lo que indica que la serie no es
-estacionaria en media.
+mostrar un aumento progresivo que se mantiene hasta el final del
+período, en 2018. Este patrón refleja un cambio de dirección en la
+tendencia y dibuja una forma de ``U'' a lo largo de los veinte años
+analizados, lo que indica que la serie no es estacionaria en media.
 
-Respecto a la estacionalidad, se observa un comportamiento recurrente
-año tras año, caracterizado por valores máximos en los meses de invierno
-(diciembre, enero y febrero) y valores mínimos en los meses de verano
-(junio a septiembre). No se detectaron valores faltantes en el período
-estudiado.
+Respecto a la estacionalidad, se observa un comportamiento que se repite
+año tras año, con valores máximos en los meses de invierno (diciembre,
+enero y febrero) y valores mínimos entre junio y septiembre. No se
+detectaron valores faltantes en el período estudiado.
 
 Con el fin de profundizar en el análisis de la tendencia y la
 variabilidad de la serie, se construyó un gráfico de boxplots anuales
-(Figura 2), que permite visualizar la distribución de los datos mes a
-mes agrupados por año.
+(Figura~\ref{fig-boxplot}), que permite visualizar la distribución de
+los datos mensuales agrupados por año.
 
 \begin{figure}
 
@@ -319,25 +321,26 @@ Estados Unidos (1999--2018)}
 
 Las medianas anuales confirman el mismo patrón en forma de ``U''
 descrito anteriormente: descienden desde 1999 hasta aproximadamente
-2010-2011, para luego aumentar de manera sostenida hasta 2018.
+2010-2011 y luego aumentan de manera sostenida hasta 2018.
 
-En cuanto a la dispersión, se observa que la amplitud de las cajas
-(rango intercuartílico) no se mantiene constante a lo largo del período:
-es mayor en los primeros años de la serie (1999-2003) y en los últimos
-(2016-2018), mientras que se reduce notablemente durante los años
-centrales (2008-2013). Esta variación en la dispersión acompaña al nivel
-general de la serie, lo que sugiere que la variancia no es estable en el
-tiempo, es decir, se evidencia heterocedasticidad.
+En cuanto a la dispersión, la amplitud de las cajas (rango
+intercuartílico) no se mantiene constante a lo largo del período: es
+mayor en los primeros años de la serie (1999-2003) y en los últimos
+(2016-2018), mientras que se reduce notablemente en los años centrales
+(2008-2013). Esta variación acompaña al nivel general de la serie, lo
+que sugiere que la variancia no es estable en el tiempo, es decir, que
+hay heterocedasticidad.
 
 Asimismo, se identifican algunos valores atípicos (outliers) en
-determinados años, correspondientes principalmente a meses de invierno
+determinados años, que corresponden principalmente a meses de invierno
 con picos de mortalidad inusualmente altos respecto al resto de las
 observaciones de ese mismo año.
 
 Para analizar con mayor detalle el comportamiento estacional de la
-serie, se elaboró un gráfico estacional (Figura 3), en el cual se
-superponen las observaciones de cada año, ordenadas por mes, con el fin
-de comparar la forma del patrón estacional entre los distintos años.
+serie, se elaboró un gráfico estacional (Figura~\ref{fig-season}), en el
+cual se superponen las observaciones de cada año, ordenadas por mes, con
+el fin de comparar la forma del patrón estacional entre los distintos
+años.
 
 \begin{figure}
 
@@ -354,22 +357,21 @@ Estados Unidos (1999--2018)}
 
 Se observa que la forma del ciclo estacional se mantiene notablemente
 estable a lo largo de todo el período: en todos los años, los valores
-más altos se concentran en los meses de diciembre y enero, mientras que
-los valores más bajos se registran entre junio y septiembre. Lo que
-varía entre los distintos años no es la forma de la curva, sino su nivel
-general, lo cual es consistente con la tendencia en forma de ``U''
-identificada previamente: las curvas correspondientes a los primeros
-años (1999-2003) y a los últimos (2016-2018) se ubican en niveles más
-altos, mientras que las curvas de los años centrales (2008-2013) se
-ubican en niveles más bajos. En síntesis, el gráfico estacional confirma
-la presencia de un patrón estacional anual marcado y persistente en el
-tiempo, lo que refuerza la evidencia de no estacionariedad de la serie
-observada en los análisis anteriores.
+más altos se concentran en diciembre, enero y febrero, mientras que los
+más bajos se registran entre junio y septiembre. Lo que varía entre los
+años no es la forma de la curva, sino su nivel general, lo cual es
+consistente con la tendencia en forma de ``U'' identificada previamente:
+las curvas de los primeros años (1999-2003) y de los últimos (2016-2018)
+se ubican en niveles más altos, mientras que las de los años centrales
+(2008-2013) quedan en niveles más bajos. En síntesis, el gráfico
+estacional confirma la presencia de un patrón estacional anual marcado y
+persistente en el tiempo, lo que refuerza la evidencia de no
+estacionariedad de la serie observada en los análisis anteriores.
 
-Con el objetivo de aislar el efecto de cada mes en particular a lo largo
-de toda la serie, se construyó un gráfico de subseries estacionales,
-donde cada panel representa un mes del año y la línea horizontal indica
-el promedio histórico de ese mes para todo el período analizado.
+Con el objetivo de aislar el efecto de cada mes a lo largo de toda la
+serie, se construyó un gráfico de subseries estacionales, donde cada
+panel representa un mes del año y la línea horizontal indica el promedio
+histórico de ese mes para todo el período analizado.
 
 \begin{figure}
 
@@ -384,22 +386,21 @@ muertes por ACV en Estados Unidos (1999--2018)}
 
 \end{figure}%
 
-La Figura 4 confirma lo observado en las figuras anteriores: los meses
-de diciembre y enero presentan los promedios más altos de mortalidad,
-mientras que los meses de junio a septiembre muestran los promedios más
-bajos, evidenciando nuevamente el patrón estacional de tipo
-invierno-verano. Asimismo, dentro de cada panel se puede apreciar que la
-evolución temporal del mes correspondiente también sigue la forma de
-``U'' identificada en la tendencia general de la serie, lo que indica
-que este comportamiento no solo se da en el nivel agregado, sino que se
-repite de manera consistente mes a mes. En conjunto, este gráfico
-refuerza la evidencia de un componente estacional fuerte y estable en el
-tiempo, que convive con una tendencia no constante a lo largo del
-período estudiado.
+La Figura~\ref{fig-subseries} confirma lo observado en las figuras
+anteriores: diciembre y enero presentan los promedios más altos de
+mortalidad, mientras que entre junio y septiembre se dan los más bajos,
+lo que muestra nuevamente un patrón estacional de tipo invierno-verano.
+Asimismo, dentro de cada panel se aprecia que la evolución temporal del
+mes correspondiente también sigue la forma de ``U'' de la tendencia
+general de la serie. Esto indica que ese comportamiento no solo se da a
+nivel agregado, sino que se repite de manera consistente mes a mes. En
+conjunto, este gráfico refuerza la evidencia de un componente estacional
+fuerte y estable en el tiempo, que convive con una tendencia no
+constante a lo largo del período estudiado.
 
-Finalmente, para contar con una confirmación estadística de las
-características observadas en los gráficos anteriores, se calculó la
-función de autocorrelación muestral, considerando hasta 36 rezagos.
+Finalmente, para contar con una confirmación estadística de lo observado
+en los gráficos anteriores, se calculó la función de autocorrelación
+muestral considerando hasta 36 rezagos.
 
 \begin{figure}
 
@@ -414,19 +415,18 @@ ACV}
 
 \end{figure}%
 
-En la Figura 5 se observa un pico de autocorrelación particularmente
-alto en el rezago 12, que vuelve a repetirse con menor intensidad en los
-rezagos 24 y 36, lo cual constituye evidencia formal de la
+En la Figura~\ref{fig-acf} se observa un pico de autocorrelación
+particularmente alto en el rezago 12, que vuelve a repetirse con menor
+intensidad en los rezagos 24 y 36, lo que aporta evidencia de la
 estacionalidad anual detectada previamente de manera gráfica. Asimismo,
-se observa que las autocorrelaciones no decaen rápidamente hacia cero a
-medida que aumenta el rezago, sino que lo hacen de forma lenta y
-sostenida, manteniéndose por encima de la banda de significancia en la
-gran mayoría de los rezagos analizados. Este comportamiento es
-característico de series no estacionarias, ya que refleja la presencia
-de una dependencia de largo plazo asociada tanto a la tendencia como a
-la estacionalidad presentes en la serie. En síntesis, el correlograma
-confirma de manera formal lo observado en el análisis gráfico previo,
-evidenciando que la serie no es estacionaria ni en media ni en varianza.
+las autocorrelaciones no decaen rápidamente hacia cero a medida que
+aumenta el rezago, sino que lo hacen de forma lenta y sostenida, y se
+mantienen por encima de la banda de significancia en la gran mayoría de
+los rezagos analizados. Este comportamiento es característico de series
+no estacionarias, ya que refleja una dependencia de largo plazo asociada
+tanto a la tendencia como a la estacionalidad de la serie. En síntesis,
+el correlograma confirma lo observado en el análisis gráfico previo y
+muestra que la serie no es estacionaria en media.
 
 Complementando el análisis de la función de autocorrelación, se calculó
 también la función de autocorrelación parcial, que permite identificar
@@ -450,28 +450,25 @@ La Figura~\ref{fig-pacf} muestra un primer coeficiente muy elevado en el
 rezago 1 (cercano a 0,8), seguido de varios coeficientes significativos
 de menor magnitud entre los rezagos 2 y 10, con signos alternantes. Se
 destaca además un coeficiente marcadamente negativo en el rezago 12
-(cercano a -0,4), que resulta notablemente mayor en valor absoluto que
-el resto de los coeficientes a partir del rezago 13, los cuales se
+(cercano a -0,4), que en valor absoluto es notablemente mayor que los de
+los rezagos siguientes. A partir del rezago 13, los coeficientes se
 ubican mayormente dentro de la banda de significancia o apenas por fuera
-de ella, salvo un pico aislado cercano al rezago 24. Este comportamiento
-sugiere que, además de la dependencia de corto plazo reflejada en los
-primeros rezagos, persiste cierta estructura asociada al componente
-estacional de la serie, evidenciada por el coeficiente significativo en
-el rezago 12. En conjunto, el correlograma parcial refuerza la idea de
-que la serie presenta una estructura de dependencia compleja,
-consistente con la presencia simultánea de componentes de corto plazo y
-de estacionalidad, lo que confirma nuevamente que la serie no es
-estacionaria en su forma original.
+de ella, salvo un pico aislado cerca del rezago 24. Esto sugiere que,
+además de la dependencia de corto plazo reflejada en los primeros
+rezagos, persiste una estructura asociada al componente estacional de la
+serie, que se evidencia en el coeficiente significativo del rezago 12.
+En conjunto, la FACP muestra una estructura de dependencia compleja, con
+componentes de corto plazo y estacionales presentes al mismo tiempo, lo
+que es coherente con una serie que no es estacionaria en su forma
+original.
 
 \section{Especificación del modelo}\label{especificaciuxf3n-del-modelo}
 
 En primer lugar, con el objetivo de evaluar si la variabilidad cambia
 con el nivel de la serie, se analizó la relación entre la media anual y
-el desvío estándar anual. Esta relación permite observar si existe una
-tendencia creciente entre ambos valores: cuando las observaciones de
-mayor nivel también muestran una mayor dispersión, suele ser indicio de
-varianza no constante y, por lo tanto, puede justificar la aplicación de
-una transformación Box--Cox para estabilizarla.
+el desvío estándar anual. Esta relación permite ver si ambos valores
+crecen juntos, cuando las observaciones de mayor nivel también muestran
+mayor dispersión, suele ser indicio de variancia no constante.
 
 \begin{figure}
 
@@ -487,28 +484,43 @@ anual}
 \end{figure}%
 
 La Figura~\ref{fig-media-desvio} muestra una relación creciente, lo que
-indica que la variancia depende del nivel de la serie.
+sugiere que la variabilidad depende del nivel de la serie.
 
-\begin{figure}[H]
+\begin{figure}
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{TP-MInesCañizares_files/figure-pdf/unnamed-chunk-6-1.pdf}}
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{TP-MInesCañizares_files/figure-pdf/fig-tranf-1.pdf}}
 
 }
 
-\caption{Transformaciones de variancia}
+\caption{\label{fig-tranf}Transformaciones de variancia}
 
 \end{figure}%
 
-La transformación logarítmica reduce, pero no elimina, esta dependencia.
-En cambio, la transformación de Box-Cox con \(\lambda ≈ −0{,}9\)
-(estimado por el método de Guerrero) deja el desvío aproximadamente
-constante respecto de la media, por lo que se adopta para el resto del
-análisis.
+La Figura~\ref{fig-tranf} compara esta relación en la serie original y
+en las series transformadas. Las transformaciones logarítmica y de
+Box-Cox reducen la asociación entre la media y el desvío anual, pero eso
+no alcanza para concluir que sea necesario transformar. En la serie
+original la asociación es positiva, aunque moderada, y buena parte de
+ella responde a la propia tendencia en forma de ``U'', ya que los años
+de mayor nivel (1999-2003 y 2016-2018) son también los de mayor amplitud
+estacional. Además, para lograr estacionariedad en media se aplicarán de
+todos modos una diferencia regular y una estacional, que eliminan el
+efecto del nivel, y las series diferenciadas presentan una variabilidad
+aproximadamente constante (Figura~\ref{fig-dif-estacional} a
+Figura~\ref{fig-dif-ambas}). Por estos motivos se decide trabajar con la
+serie original, sin transformar. Esta decisión tiene además la ventaja
+de que los coeficientes, los pronósticos y los intervalos de predicción
+quedan expresados directamente en cantidad de muertes, sin necesidad de
+destransformar. Su adecuación se evalúa más adelante a través del
+diagnóstico de los residuos y de la capacidad predictiva de los modelos
+ajustados.
 
 Una vez evaluada la necesidad de estabilizar la variancia, el siguiente
 paso consiste en lograr que la serie sea estacionaria en media. Para
 ello se emplea la diferenciación, que elimina patrones sistemáticos de
-la serie: la diferenciación regular, \((1-B)^d\), elimina tendencias de
+la serie. La diferenciación regular, \((1-B)^d\), elimina tendencias de
 largo plazo, y la diferenciación estacional, \((1-B^{12})^D\), elimina
 las fluctuaciones que se repiten de forma regular cada año.
 
@@ -526,19 +538,33 @@ estacional, siguiendo la recomendación de Hyndman y Athanasopoulos.
 
 }
 
-\caption{\label{fig-dif-estacional}Serie transformada con una diferencia
-estacional, con su FAC y FACP}
+\caption{\label{fig-dif-estacional}Serie con una diferencia estacional,
+con su FAC y FACP}
 
 \end{figure}%
 
-La prueba indicó que se requiere una diferencia estacional. Sin embargo,
-al observar la serie con diferencia estacional
-(Figura~\ref{fig-dif-estacional}), se ve que su nivel se desplaza a lo
-largo del tiempo, con un tramo de valores altos entre 2013 y 2016, y que
-su función de autocorrelación decae lentamente, con valores positivos y
-significativos en casi todos los rezagos. Esto indica que persiste una
-tendencia. Coincidentemente, la prueba para diferencias regulares
-aplicada sobre esta serie indicó una diferencia adicional.
+Con solo la diferencia estacional (Figura~\ref{fig-dif-estacional}) se
+elimina el ciclo anual, pero la FAC decae lentamente en los primeros
+rezagos, lo que indica que la serie todavía no es estacionaria en media.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{TP-MInesCañizares_files/figure-pdf/fig-dif-regular-1.pdf}}
+
+}
+
+\caption{\label{fig-dif-regular}Serie con una diferencia regular, con su
+FAC y FACP}
+
+\end{figure}%
+
+Al aplicar solo una diferencia regular (Figura~\ref{fig-dif-regular}),
+la serie oscila alrededor de un nivel constante y desaparece la
+tendencia en forma de ``U''. Sin embargo, el patrón estacional persiste:
+la FAC muestra picos marcados en los rezagos estacionales (12, 24 y 36),
+por lo que una diferencia regular por sí sola no alcanza.
 
 \begin{figure}
 
@@ -548,17 +574,16 @@ aplicada sobre esta serie indicó una diferencia adicional.
 
 }
 
-\caption{\label{fig-dif-ambas}Serie transformada con una diferencia
-regular y una estacional, con su FAC y FACP}
+\caption{\label{fig-dif-ambas}Serie con una diferencia regular y una
+estacional, con su FAC y FACP}
 
 \end{figure}%
 
-Al aplicar ambas diferencias (Figura~\ref{fig-dif-ambas}), la serie
-oscila alrededor de cero con variabilidad aproximadamente constante y
-sin tendencia aparente. Además, la autocorrelación en el rezago 1 es
-cercana a \(-0{,}3\), lejos del valor de \(-0{,}5\) a partir del cual
-suele sospecharse sobrediferenciación. Se adopta entonces \(d = 1\) y
-\(D = 1\).
+Al combinar ambas diferencias (Figura~\ref{fig-dif-ambas}), la serie
+oscila alrededor de cero con variabilidad aproximadamente constante y la
+FAC deja de mostrar un decaimiento lento. Por lo tanto, se adoptan
+\(d = 1\) y \(D = 1\), y es sobre esta serie que se identifican los
+modelos candidatos.
 
 \subsection{Identificación de modelos
 candidatos}\label{identificaciuxf3n-de-modelos-candidatos}
@@ -582,17 +607,34 @@ A partir de la FAC y la FACP de la serie diferenciada
 \end{itemize}
 
 Se proponen entonces tres modelos candidatos,
-\(\text{SARIMA}(p,d,q)(P,D,Q)_{12}\): (1) \((0,1,1)(0,1,1)\), (2)
-\((0,1,2)(0,1,1)\) y (3) \((2,1,0)(2,1,0)\), este último como
-alternativa puramente autorregresiva sugerida por la FACP. Se incluye
-además, como referencia, el modelo seleccionado por el algoritmo
-automático de búsqueda.
+\(\text{SARIMA}(p,d,q)(P,D,Q)_{12}\):
+
+\begin{enumerate}
+\def\labelenumi{(\arabic{enumi})}
+\tightlist
+\item
+  \((0,1,1)(0,1,1)\).
+\item
+  \((0,1,2)(0,1,1)\), que agrega un segundo término de promedios móviles
+  no estacional, sugerido por la FACP.
+\item
+  \((0,1,2)(1,1,2)\), seleccionado por el algoritmo automático de
+  búsqueda.
+\end{enumerate}
+
+Adicionalmente, se probó un cuarto modelo,
+\(\text{SARIMA}(2,0,0)(2,0,0)_{12}\), sin ninguna diferencia, para
+evaluar si la dependencia, incluida la estacional, podía explicarse solo
+con términos autorregresivos. Este modelo se descartó porque sus
+residuos no cumplen el test de Portmanteau, es decir, presentan
+autocorrelación significativa. Por ese motivo no se lo considera en el
+resto del análisis.
 
 \section{Ajuste y diagnóstico}\label{ajuste-y-diagnuxf3stico}
 
-Los modelos se estimaron por máxima verosimilitud sobre la serie
-transformada. Como todos comparten la misma transformación y los mismos
-órdenes de diferenciación, pueden compararse mediante AICc y BIC
+Los modelos candidatos con diferenciación se estimaron por máxima
+verosimilitud sobre la serie original. Como los tres comparten los
+mismos órdenes de diferenciación, pueden compararse mediante AICc y BIC
 (Tabla~\ref{tbl-aicc}).
 
 {
@@ -609,31 +651,232 @@ Modelo & AICc & BIC \\
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-ARIMA(0,1,2)(0,1,1){[}12{]} & -4874.32 & -4860.80 \\
-ARIMA(0,1,1)(0,1,1){[}12{]} & -4870.79 & -4860.62 \\
-Automático: ARIMA(0,1,1)(2,1,2){[}12{]} & -4868.60 & -4848.43 \\
-ARIMA(2,1,0)(2,1,0){[}12{]} & -4853.04 & -4836.19 \\
+SARIMA(0,1,2)(1,1,2){[}12{]} & 3273.52 & 3293.69 \\
+SARIMA(0,1,2)(0,1,1){[}12{]} & 3284.12 & 3297.64 \\
+SARIMA(0,1,1)(0,1,1){[}12{]} & 3304.53 & 3314.70 \\
 
 \end{longtable}
 
 }
 
-El modelo \(\text{SARIMA}(0,1,2)(0,1,1)_{12}\) presenta los menores
-valores de AICc y BIC. El modelo automático, que resultó ser un
-\(\text{SARIMA}(0,1,1)(2,1,2)_{12}\), es más complejo y casi todos sus
-coeficientes estacionales no son significativos, lo que sugiere
-sobreparametrización. El modelo autorregresivo es el de peor ajuste.
+Al comparar los modelos candidatos mediante AICc y BIC, se observa que
+el SARIMA(0,1,2)(1,1,2)\(_{12}\) y el SARIMA(0,1,2)(0,1,1)\(_{12}\)
+presentan los menores valores en ambos criterios.
 
-Se realiza el ajuste para el modelo \(\text{ARIMA}(0,1,2)(0,1,1)_{12}\)
-sobre la serie transformada \(Z_t\):
+La diferencia de estos dos modelos respecto del
+SARIMA(0,1,1)(0,1,1)\(_{12}\) es considerable, lo que sugiere que el
+segundo término de promedios móviles no estacional mejora el ajuste.
+Entre los dos primeros, el SARIMA(0,1,2)(1,1,2)\(_{12}\) tiene el menor
+AICc, pero la diferencia en el BIC es chica, ya que este criterio
+penaliza más los parámetros adicionales. Por lo tanto, con este análisis
+no alcanza para elegir entre ambos.
 
-\[(1-B)(1-B^{12})Z_t = (1-\theta_1 B-\theta_2 B^2)(1-\Theta_1 B^{12})\,a_t,\]
+No obstante, la selección definitiva del modelo queda sujeta al análisis
+de los residuos y a la verificación de los supuestos correspondientes.
 
-donde \(Z_t\) es la serie transformada mediante Box-Cox con
-\(\hat{\lambda} = -0{,}90\) y \(a_t\) es ruido blanco. De esta forma, el
-modelo estimado queda:
+Se realiza el ajuste para el modelo \(\text{SARIMA}(0,1,2)(1,1,2)_{12}\)
+sobre la serie original \(Z_t\):
 
-\[(1-B)(1-B^{12})Z_t = (1-0{,}4580B-0{,}1598B^2)(1-0{,}7814B^{12})\,a_t.\]
+\[(1-\Phi_1 B^{12})(1-B)(1-B^{12})\,Z_t = (1-\theta_1 B-\theta_2 B^2)(1-\Theta_1 B^{12}-\Theta_2 B^{24})\,a_t \]
+
+donde \(Z_t\) es la cantidad mensual de muertes por ACV y \(a_t\) es
+ruido blanco. De esta forma, el modelo estimado queda:
+
+\[(1-0{,}5786\,B^{12})(1-B)(1-B^{12})\,Z_t = (1-0{,}4300\,B-0{,}2818\,B^{2})(1-1{,}4468\,B^{12}+0{,}7056\,B^{24})\,a_t\]
+
+En la Tabla~\ref{tbl-coef-m3} se presentan las estimaciones de los
+coeficientes junto con sus errores estándar y los intervalos de
+confianza del 95 \%, que permiten evaluar su significación.
+
+{
+
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1507}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1644}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2192}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2329}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2329}}@{}}
+
+\caption{\label{tbl-coef-m3}Coeficientes estimados del modelo
+SARIMA(0,1,2)(1,1,2){[}12{]}}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+Parámetro
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Estimación
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Error estándar
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+IC 95\% inferior
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+IC 95\% superior
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+ma1 & -0.4300 & 0.0630 & -0.5535 & -0.3065 \\
+ma2 & -0.2818 & 0.0618 & -0.4029 & -0.1608 \\
+sar1 & 0.5786 & 0.1195 & 0.3444 & 0.8128 \\
+sma1 & -1.4468 & 0.1245 & -1.6907 & -1.2028 \\
+sma2 & 0.7056 & 0.1095 & 0.4910 & 0.9201 \\
+
+\end{longtable}
+
+}
+
+Dado que ningún intervalo de confianza contiene al cero, se concluye que
+los cinco parámetros son significativos con un nivel de significación
+del 5 \%. Además, las raíces de los polinomios de promedios móviles,
+tanto el regular como el estacional, quedan fuera del círculo unitario,
+por lo que el modelo es invertible; y el coeficiente autorregresivo
+estacional (\(0{,}58\)) es menor que 1 en valor absoluto, por lo que el
+modelo es estacionario luego de diferenciar.
+
+Se procede con el análisis de los residuos, excluyendo las primeras 13
+observaciones, ya que dependen de las condiciones iniciales de la
+diferenciación. Se inicia con el test de Portmanteau, cuya hipótesis
+nula es que los residuos son ruido blanco:
+
+{
+
+\begin{longtable}[]{@{}cccc@{}}
+
+\caption{\label{tbl-port-m3}Test de Portmanteau de los residuos del
+modelo SARIMA(0,1,2)(1,1,2){[}12{]}}
+
+\tabularnewline
+
+\toprule\noalign{}
+Rezago & Estadística & gl & p-value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+6 & 2.251 & 1 & 0.134 \\
+12 & 7.269 & 7 & 0.401 \\
+18 & 8.862 & 13 & 0.783 \\
+24 & 12.129 & 19 & 0.880 \\
+
+\end{longtable}
+
+}
+
+Los valores del test muestran que ningún p-value es menor a 0,05 en los
+rezagos evaluados, por lo que no se rechaza la hipótesis de que los
+residuos son ruido blanco y no hay evidencia de autocorrelación
+significativa.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{TP-MInesCañizares_files/figure-pdf/fig-res-m3-1.pdf}}
+
+}
+
+\caption{\label{fig-res-m3}Residuos estandarizados del modelo
+SARIMA(0,1,2)(1,1,2){[}12{]}, con su FAC y FACP}
+
+\end{figure}%
+
+Los residuos estandarizados oscilan alrededor de cero con variabilidad
+aproximadamente constante, aunque se observan dos valores por fuera del
+intervalo \((-3, 3)\). En la FAC y la FACP de los residuos ningún rezago
+supera las bandas de significancia, por lo que no se observa dependencia
+serial remanente. Los valores más altos, alrededor de los rezagos 11 y
+22, quedan dentro de las bandas y son de magnitud baja (cercanos a 0,1).
+Esto es coherente con el resultado del test de Portmanteau, que no
+rechaza la hipótesis de ausencia de autocorrelación. El modelo captura
+adecuadamente la dependencia de la serie y los residuos son compatibles
+con ruido blanco.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{TP-MInesCañizares_files/figure-pdf/fig-norm-m3-1.pdf}}
+
+}
+
+\caption{\label{fig-norm-m3}Histograma y QQ-plot de los residuos
+estandarizados del modelo SARIMA(0,1,2)(1,1,2){[}12{]}}
+
+\end{figure}%
+
+El histograma se aproxima a una distribución normal, aunque con una cola
+izquierda algo más pesada (Figura~\ref{fig-norm-m3}). En el QQ-plot los
+puntos siguen la recta, salvo en el extremo inferior, donde se alejan
+los valores atípicos mencionados.
+
+{
+
+\begin{longtable}[]{@{}cccc@{}}
+
+\caption{\label{tbl-out-m3}Observaciones con residuos estandarizados
+fuera de (-3, 3), modelo SARIMA(0,1,2)(1,1,2){[}12{]}}
+
+\tabularnewline
+
+\toprule\noalign{}
+Fecha & Observado & Ajustado & Residuo estandarizado \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2000 mar. & 14.297 & 15.713 & -4.59 \\
+2003 ene. & 15.122 & 16.086 & -3.12 \\
+
+\end{longtable}
+
+}
+
+{
+
+\begin{longtable}[]{@{}ccc@{}}
+
+\caption{\label{tbl-sw-m3}Test de Shapiro-Wilk sobre los residuos
+estandarizados, modelo SARIMA(0,1,2)(1,1,2){[}12{]}}
+
+\tabularnewline
+
+\toprule\noalign{}
+Situación & n & p-value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Todas las observaciones & 227 & \textless{} 0.0001 \\
+Sin las observaciones atípicas & 225 & 0.038 \\
+
+\end{longtable}
+
+}
+
+Se identifican 2 observaciones con residuos estandarizados fuera del
+intervalo \((-3, 3)\) (Tabla~\ref{tbl-out-m3}): marzo de 2000
+(\(-4{,}59\)) y enero de 2003 (\(-3{,}12\)), en ambos casos con valores
+observados inferiores a los ajustados. La primera se ubica al comienzo
+de la serie, por lo que podría estar influida por las condiciones
+iniciales de la diferenciación. Al excluir estas dos observaciones, el
+p-value del test de Shapiro-Wilk pasa de \textless{} 0,0001 a 0,038
+(Tabla~\ref{tbl-sw-m3}). La evidencia contra la normalidad se reduce de
+forma marcada, aunque persiste una desviación leve, asociada a la cola
+izquierda algo más pesada observada en el histograma. Esto afecta
+principalmente a los intervalos de predicción, que deben interpretarse
+con cautela, y no a los pronósticos puntuales.
+
+Se realiza el ajuste para el modelo \(\text{SARIMA}(0,1,2)(0,1,1)_{12}\)
+sobre la serie original \(Z_t\):
+
+\[(1-B)(1-B^{12})Z_t = (1-\theta_1 B-\theta_2 B^2)(1-\Theta_1 B^{12})\,a_t\]
+
+donde \(a_t\) es ruido blanco. De esta forma, el modelo estimado queda:
+
+\[(1-B)(1-B^{12})Z_t = (1-0{,}4105B-0{,}3187B^2)(1-0{,}6667B^{12})\,a_t\]
 
 {
 
@@ -665,26 +908,28 @@ IC 95\% superior
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-ma1 & -0.4580 & 0.0686 & -0.5925 & -0.3235 \\
-ma2 & -0.1598 & 0.0663 & -0.2898 & -0.0298 \\
-sma1 & -0.7814 & 0.0561 & -0.8914 & -0.6714 \\
+ma1 & -0.4105 & 0.0626 & -0.5333 & -0.2877 \\
+ma2 & -0.3187 & 0.0618 & -0.4399 & -0.1976 \\
+sma1 & -0.6667 & 0.0496 & -0.7639 & -0.5696 \\
 
 \end{longtable}
 
 }
 
 Los tres coeficientes resultan significativos, ya que sus intervalos de
-confianza del 95\% no contienen al cero (Tabla Tabla~\ref{tbl-coef-m2}).
-Además, el coeficiente estacional (\(-0{,}78\)) se encuentra alejado de
-\(-1\), por lo que el modelo es invertible.
+confianza del 95 \% no contienen al cero (Tabla~\ref{tbl-coef-m2}).
+Además, el coeficiente de promedios móviles estacional (\(-0{,}67\)) es
+menor que 1 en valor absoluto y las raíces del polinomio de promedios
+móviles regular quedan fuera del círculo unitario, por lo que el modelo
+es invertible.
 
 Para el diagnóstico de los residuos se excluyeron las primeras 13
 observaciones, cuyos residuos dependen de las condiciones iniciales de
 la diferenciación.
 
-Se procede entonces con el análisis de los residuos para este primer
-modelo, iniciando con el Test de Portmanteau para verificar si la
-hipótesis de que los mismos son ruido blanco se cumple:
+Se procede entonces con el análisis de los residuos de este modelo,
+iniciando con el test de Portmanteau, cuya hipótesis nula es que los
+residuos son ruido blanco:
 
 {
 
@@ -701,18 +946,18 @@ Rezago & Estadística & gl & p-value \\
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-6 & 3.654 & 3 & 0.301 \\
-12 & 15.131 & 9 & 0.087 \\
-18 & 17.551 & 15 & 0.287 \\
-24 & 24.919 & 21 & 0.251 \\
+6 & 3.376 & 3 & 0.337 \\
+12 & 8.165 & 9 & 0.518 \\
+18 & 10.803 & 15 & 0.766 \\
+24 & 14.888 & 21 & 0.829 \\
 
 \end{longtable}
 
 }
 
-Los valores del test muestran que ningún p-value es significativo para
-ninguno de los rezagos evaluados (todos mayores a 0.05), por lo que los
-residuos se comportan como ruido blanco y no presentan autocorrelación
+Los valores del test muestran que ningún p-value es menor a 0,05 en los
+rezagos evaluados, por lo que no se rechaza la hipótesis de que los
+residuos son ruido blanco y no hay evidencia de autocorrelación
 significativa.
 
 \begin{figure}
@@ -724,17 +969,20 @@ significativa.
 }
 
 \caption{\label{fig-res-m2}Residuos estandarizados del modelo
-ARIMA(0,1,2)(0,1,1){[}12{]}, con su FAC y FACP}
+SARIMA(0,1,2)(0,1,1){[}12{]}, con su FAC y FACP}
 
 \end{figure}%
 
-Los residuos estandarizados (Figura Figura~\ref{fig-res-m2}) oscilan
-alrededor de cero con variabilidad aproximadamente constante. Se
-identifica una observación al inicio de la serie por fuera del intervalo
-\((-3, 3)\). La FAC y la FACP de los residuos se mantienen mayormente
-dentro de las bandas de significancia, con un único rezago (el 12)
-apenas por fuera en la FAC, lo cual es compatible con el azar al evaluar
-36 rezagos y con el resultado del test de Portmanteau.
+Los residuos estandarizados (Figura~\ref{fig-res-m2}) oscilan alrededor
+de cero con variabilidad aproximadamente constante. Se identifica una
+observación por fuera del intervalo \((-3, 3)\), al inicio de la serie
+(marzo de 2000). La FAC y la FACP de los residuos quedan dentro de las
+bandas de significancia, con la única excepción del rezago 36 en la FAC,
+que las supera levemente. Como se evalúan 36 rezagos, es esperable que
+alguno quede por fuera de las bandas de confianza del 95 \% solo por
+azar, y un único valor en un rezago tan alto no sugiere una dependencia
+no capturada por el modelo. Esto es coherente con el resultado del test
+de Portmanteau.
 
 \begin{figure}
 
@@ -745,231 +993,310 @@ apenas por fuera en la FAC, lo cual es compatible con el azar al evaluar
 }
 
 \caption{\label{fig-norm-m2}Histograma y QQ-plot de los residuos
-estandarizados del modelo ARIMA(0,1,2)(0,1,1){[}12{]}}
+estandarizados del modelo SARIMA(0,1,2)(0,1,1){[}12{]}}
 
 \end{figure}%
 
-El histograma y el QQ-plot (Figura Figura~\ref{fig-norm-m2}) muestran
-una distribución aproximadamente normal, con una cola izquierda algo más
-pesada debida a los valores extremos mencionados. Además, se realizó el
-test de Shapiro-Wilk, en donde se rechaza la hipótesis de normalidad de
-los residuos (p-value = 0,0006). Este apartamiento se concentra en la
-cola izquierda y se debe principalmente a dos observaciones atípicas,
-correspondientes a marzo de 2000 y enero de 2001, cuyos residuos
-estandarizados superan en valor absoluto el valor 3. Dado que el test de
-Portmanteau no detecta autocorrelación remanente, la falta de normalidad
-no afecta los pronósticos puntuales, pero sí podría afectar la exactitud
-de los intervalos de pronóstico, que se construyen bajo el supuesto de
-normalidad.
-
-Se realiza el ajuste para el modelo \(\text{SARIMA}(0,1,1)(0,1,1)_{12}\)
-sobre la serie transformada \(Z_t\):
-
-\[(1-B)(1-B^{12})Z_t = (1-\theta_1 B)(1-\Theta_1 B^{12})\,a_t,\]
-
-donde \(Z_t\) es la serie transformada mediante Box-Cox con
-\(\hat{\lambda} = -0{,}90\) y \(a_t\) es ruido blanco. De esta forma, el
-modelo estimado queda:
-
-\[(1-B)(1-B^{12})Z_t = (1-0{,}5526B)(1-0{,}7872B^{12})\,a_t.\]
-
-Se presenta una tabla con los valores de los coeficientes estimados,
-acompañados de un IC para probar su significación.
-
-{
-
-\begin{longtable}[]{@{}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1507}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1644}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2192}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2329}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2329}}@{}}
-
-\caption{\label{tbl-coef-m1}Coeficientes estimados del modelo
-ARIMA(0,1,1)(0,1,1){[}12{]}}
-
-\tabularnewline
-
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\centering
-Parámetro
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Estimación
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Error estándar
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-IC 95\% inferior
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-IC 95\% superior
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-ma1 & -0.5526 & 0.0684 & -0.6866 & -0.4186 \\
-sma1 & -0.7872 & 0.0559 & -0.8967 & -0.6777 \\
-
-\end{longtable}
-
-}
-
-Dado que ningún intervalo contiene al cero, se concluye que los dos
-parámetros son significativos con un nivel de significación del 5\%.
-Además, el coeficiente estacional (\(-0{,}79\)) se aleja de \(-1\), por
-lo que el modelo es invertible.
-
-Se procede con el análisis de los residuos, excluyendo las primeras 13
-observaciones, ya que dependen de las condiciones iniciales de la
-diferenciación. Se inicia con el test de Portmanteau para verificar la
-hipótesis de que los residuos son ruido blanco:
+El histograma y el QQ-plot (Figura~\ref{fig-norm-m2}) muestran una
+distribución aproximadamente normal, con una cola izquierda algo más
+pesada, en parte asociada a la observación atípica mencionada.
 
 {
 
 \begin{longtable}[]{@{}cccc@{}}
 
-\caption{\label{tbl-port-m1}Test de Portmanteau de los residuos del
-modelo ARIMA(0,1,1)(0,1,1){[}12{]}}
+\caption{\label{tbl-out-m2}Observaciones con residuos estandarizados
+fuera de (-3, 3), modelo SARIMA(0,1,2)(0,1,1){[}12{]}}
 
 \tabularnewline
 
 \toprule\noalign{}
-Rezago & Estadística & gl & p-value \\
+Fecha & Observado & Ajustado & Residuo estandarizado \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-6 & 10.761 & 4 & 0.029 \\
-12 & 22.309 & 10 & 0.014 \\
-18 & 24.399 & 16 & 0.081 \\
-24 & 31.097 & 22 & 0.094 \\
+2000 mar. & 14.297 & 15.857 & -4.81 \\
 
 \end{longtable}
 
 }
-
-El test rechaza la hipótesis de ruido blanco, con un nivel de
-significación del 5\%, en los rezagos 6 (p-value = 0,029) y 12 (p-value
-= 0,014). En los rezagos 18 y 24 no se rechaza, aunque los p-values
-(0,081 y 0,094) son cercanos al umbral. Esto indica que los residuos
-conservan autocorrelación que el modelo no logra explicar.
-
-\begin{figure}
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{TP-MInesCañizares_files/figure-pdf/fig-res-m1-1.pdf}}
-
-}
-
-\caption{\label{fig-res-m1}Residuos estandarizados del modelo
-ARIMA(0,1,1)(0,1,1){[}12{]}, con su FAC y FACP}
-
-\end{figure}%
-
-Los residuos estandarizados oscilan alrededor de cero con variabilidad
-aproximadamente constante, aunque se observan dos valores por fuera del
-intervalo \((-3, 3)\) al inicio de la serie. En la FAC y la FACP el
-rezago 1 supera claramente la banda de significancia, y los rezagos 10 y
-11 se ubican en el límite. Esto es coherente con el resultado del test
-de Portmanteau: persiste dependencia de corto plazo no capturada por el
-modelo.
-
-\begin{figure}
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{TP-MInesCañizares_files/figure-pdf/fig-norm-m1-1.pdf}}
-
-}
-
-\caption{\label{fig-norm-m1}Histograma y QQ-plot de los residuos
-estandarizados del modelo ARIMA(0,1,1)(0,1,1){[}12{]}}
-
-\end{figure}%
-
-El histograma se aproxima a una distribución normal, con una cola
-izquierda algo más pesada. En el QQ-plot los puntos siguen la recta,
-salvo en el extremo inferior, donde se separan los valores atípicos
-mencionados. Además, se realizó el test de Shapiro-Wilk sobre los
-residuos para evaluar normalidad, el cuál rechazamla hipótesis (p-value
-= 0,0010). Este apartamiento se concentra en la cola izquierda y se debe
-a las observaciones atípicas del inicio de la serie.
-
-En síntesis, aunque los coeficientes son significativos, este modelo no
-pasa el diagnóstico: los residuos presentan autocorrelación remanente y
-no son normales.
-
-Se procede a comparar ambos modelos considerados:
 
 {
 
-\begin{longtable}[]{@{}cccc@{}}
+\begin{longtable}[]{@{}ccc@{}}
 
-\caption{\label{tbl-comparacion}Comparación de los modelos SARIMA
-considerados}
+\caption{\label{tbl-sw-m2}Test de Shapiro-Wilk sobre los residuos
+estandarizados, modelo SARIMA(0,1,2)(0,1,1){[}12{]}}
 
 \tabularnewline
 
 \toprule\noalign{}
-Modelo & AICc & BIC & MAPE (\%) \\
+Situación & n & p-value \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-ARIMA(0,1,1)(0,1,1){[}12{]} & -4870.79 & -4860.62 & 3.61 \\
-ARIMA(0,1,2)(0,1,1){[}12{]} & -4874.32 & -4860.80 & 3.57 \\
+Todas las observaciones & 227 & \textless{} 0.0001 \\
+Sin las observaciones atípicas & 226 & 0.002 \\
 
 \end{longtable}
 
 }
 
-En síntesis, el modelo \(\text{SARIMA}(0,1,2)(0,1,1)_{12}\) presenta
+Se identifica 1 observación con residuo estandarizado fuera del
+intervalo \((-3, 3)\) (Tabla~\ref{tbl-out-m2}), marzo de 2000
+(\(-4{,}81\)), con valor observado inferior al ajustado. Al estar
+ubicada al comienzo de la serie, podría estar influida por las
+condiciones iniciales de la diferenciación. Al excluirla, el test de
+Shapiro-Wilk continúa rechazando la normalidad (p-value = 0,002, frente
+a \textless{} 0,0001 con todas las observaciones;
+Tabla~\ref{tbl-sw-m2}), por lo que la desviación respecto de la
+normalidad no se debe únicamente a esta observación, sino a una cola
+izquierda más pesada que la de la distribución normal. Esto afecta
+principalmente a los intervalos de predicción y no a los pronósticos
+puntuales.
+
+En síntesis, el \(\text{SARIMA}(0,1,2)(0,1,1)_{12}\) presenta
 coeficientes significativos y residuos sin autocorrelación remanente,
-con la salvedad de la falta de normalidad debida a dos observaciones
-atípicas.
+aunque con una cola izquierda más pesada que la normal, que persiste al
+excluir la observación atípica.
 
-Al comparar ambos modelos (Tabla Tabla~\ref{tbl-comparacion}), el
-\(\text{SARIMA}(0,1,2)(0,1,1)_{12}\) presenta un AICc menor (diferencia
-de aproximadamente 3,5 puntos), mientras que el BIC y el MAPE son
-prácticamente equivalentes. Dado que los criterios de información no
-distinguen claramente entre ambos, el diagnóstico de los residuos
-resulta determinante: el \(\text{SARIMA}(0,1,2)(0,1,1)_{12}\) es el
-único cuyos residuos no muestran autocorrelación remanente, y todos sus
-coeficientes son significativos. Por lo tanto, se lo selecciona como
-modelo final para la etapa de pronóstico.
+Dado que los dos modelos candidatos cumplen con la ausencia de
+autocorrelación residual y que este análisis no permite distinguirlos,
+la elección entre ellos se define comparando, además de los criterios de
+información, su capacidad predictiva sobre los pronósticos de 2019.
 
-\section{Evaluación predictiva del modelo
-seleccionado}\label{evaluaciuxf3n-predictiva-del-modelo-seleccionado}
+\section{Evaluación predictiva de los modelos
+candidatos}\label{evaluaciuxf3n-predictiva-de-los-modelos-candidatos}
 
-Para la etapa de pronósticos, se ajusta el modelo SARIMA seleccionado
-utilizando los datos disponibles hasta diciembre de 2018 y se generan
-predicciones para las doce observaciones del año 2019, que constituyen
-la muestra de evaluación. Además, se comparan los valores pronosticados
-con los datos reales de 2019 a fin de evaluar el desempeño del modelo y
-analizar su capacidad predictiva.
+Para la etapa de pronósticos se ajustan los dos modelos candidatos,
+\(\text{SARIMA}(0,1,2)(1,1,2)_{12}\) y
+\(\text{SARIMA}(0,1,2)(0,1,1)_{12}\), con los datos disponibles hasta
+diciembre de 2018, y se generan predicciones para las doce observaciones
+de 2019, que constituyen la muestra de evaluación. Luego se comparan los
+valores pronosticados con los datos reales de 2019 para evaluar el
+desempeño de cada modelo y su capacidad predictiva, y a partir de eso se
+define cuál se adopta como modelo final.
 
-{\def\LTcaptype{none} % do not increment counter
+En la Tabla~\ref{tbl-pronosticos3} se presentan los pronósticos
+puntuales para 2019 del \(\text{SARIMA}(0,1,2)(1,1,2)_{12}\), junto con
+los valores reales y los intervalos de predicción del 95\%, y en la
+Figura~\ref{fig-pronostico3} se los grafica sobre la serie observada.
+
+{
+
 \begin{longtable}[]{@{}cccc@{}}
+
+\caption{\label{tbl-pronosticos3}Pronósticos del modelo
+SARIMA(0,1,2)(1,1,2){[}12{]} para 2019}
+
+\tabularnewline
+
 \toprule\noalign{}
 Mes & Valor real & Pronóstico & IC del 95\% \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-enero & 13.447 & NA & (NA; 3434) \\
-febrero & 12.125 & NA & (NA; 2985) \\
-marzo & 13.433 & NA & (NA; 2909) \\
-abril & 12.443 & NA & (NA; 2743) \\
-mayo & 12.232 & NA & (NA; 2637) \\
-junio & 11.556 & NA & (NA; 2508) \\
-julio & 11.870 & NA & (NA; 2444) \\
-agosto & 11.816 & NA & (NA; 2378) \\
-septiembre & 11.752 & NA & (NA; 2303) \\
-octubre & 12.693 & NA & (NA; 2285) \\
-noviembre & 12.955 & NA & (NA; 2236) \\
-diciembre & 13.683 & NA & (NA; 2217) \\
+enero & 13.447 & 14.090 & (13479; 14701) \\
+febrero & 12.125 & 12.420 & (11717; 13123) \\
+marzo & 13.433 & 13.261 & (12536; 13986) \\
+abril & 12.443 & 12.288 & (11543; 13034) \\
+mayo & 12.232 & 12.259 & (11493; 13025) \\
+junio & 11.556 & 11.604 & (10817; 12390) \\
+julio & 11.870 & 11.884 & (11078; 12689) \\
+agosto & 11.816 & 11.961 & (11136; 12785) \\
+septiembre & 11.752 & 11.716 & (10873; 12559) \\
+octubre & 12.693 & 12.581 & (11720; 13442) \\
+noviembre & 12.955 & 12.829 & (11950; 13708) \\
+diciembre & 13.683 & 13.888 & (12991; 14785) \\
+
 \end{longtable}
+
 }
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{TP-MInesCañizares_files/figure-pdf/fig-pronostico3-1.pdf}}
+
+}
+
+\caption{\label{fig-pronostico3}Pronóstico del modelo
+SARIMA(0,1,2)(1,1,2){[}12{]} para 2019 frente a los valores reales}
+
+\end{figure}%
+
+El modelo reproduce bien la forma estacional del año, con máximos en
+enero y diciembre y mínimos entre junio y septiembre. Los pronósticos
+quedan cerca de los valores reales en casi todos los meses. La mayor
+diferencia se da en enero, donde el modelo sobreestima en alrededor de
+640 muertes y el valor real queda levemente por debajo del límite
+inferior del intervalo del 95\%. En los once meses restantes, los
+valores reales caen dentro del intervalo.
+
+La Tabla~\ref{tbl-pronosticos2} y la Figura~\ref{fig-pronostico2}
+muestran los pronósticos para 2019 del
+\(\text{SARIMA}(0,1,2)(0,1,1)_{12}\) con el mismo formato.
+
+\newpage
+
+{
+
+\begin{longtable}[]{@{}cccc@{}}
+
+\caption{\label{tbl-pronosticos2}Pronósticos del modelo
+SARIMA(0,1,2)(0,1,1){[}12{]} para 2019}
+
+\tabularnewline
+
+\toprule\noalign{}
+Mes & Valor real & Pronóstico & IC del 95\% \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+enero & 13.447 & 13.980 & (13341; 14619) \\
+febrero & 12.125 & 12.293 & (11552; 13035) \\
+marzo & 13.433 & 13.073 & (12312; 13834) \\
+abril & 12.443 & 12.275 & (11495; 13056) \\
+mayo & 12.232 & 12.091 & (11291; 12890) \\
+junio & 11.556 & 11.466 & (10648; 12284) \\
+julio & 11.870 & 11.681 & (10845; 12517) \\
+agosto & 11.816 & 11.770 & (10917; 12624) \\
+septiembre & 11.752 & 11.534 & (10662; 12405) \\
+octubre & 12.693 & 12.422 & (11534; 13310) \\
+noviembre & 12.955 & 12.586 & (11681; 13491) \\
+diciembre & 13.683 & 13.501 & (12580; 14422) \\
+
+\end{longtable}
+
+}
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{TP-MInesCañizares_files/figure-pdf/fig-pronostico2-1.pdf}}
+
+}
+
+\caption{\label{fig-pronostico2}Pronóstico del modelo
+SARIMA(0,1,2)(0,1,1){[}12{]} para 2019 frente a los valores reales}
+
+\end{figure}%
+
+Este modelo también reproduce el patrón estacional y los doce valores
+reales caen dentro del intervalo del 95\%. Sin embargo, subestima el
+nivel en diez de los doce meses, todos desde marzo, con diferencias de
+entre 46 y 369 muertes, y sobreestima en enero (unas 530 muertes) y
+febrero.
+
+Las medidas de error de ambos modelos sobre 2019 se presentan en la
+Tabla~\ref{tbl-comparacion}
+
+{
+
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.3824}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1324}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1324}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1029}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1029}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1471}}@{}}
+
+\caption{\label{tbl-comparacion}Comparación de los modelos candidatos:
+criterios de información (1999-2018) y capacidad predictiva sobre 2019}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+Modelo
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+AICc
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+BIC
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+RMSE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+MAE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+MAPE (\%)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+SARIMA(0,1,2)(0,1,1){[}12{]} & 3284,12 & 3297,64 & 262,5 & 228,0 &
+1,79 \\
+SARIMA(0,1,2)(1,1,2){[}12{]} & 3273,52 & 3293,69 & 232,6 & 164,7 &
+1,28 \\
+
+\end{longtable}
+
+}
+
+Al comparar ambos modelos (Tabla~\ref{tbl-comparacion}), el
+\(\text{SARIMA}(0,1,2)(1,1,2)_{12}\) presenta menores valores de AICc
+(una diferencia de aproximadamente 10,6 puntos) y de BIC (3293,69 frente
+a 3297,64), aunque en este último la diferencia es menor porque penaliza
+más los parámetros adicionales. Además, tiene mejor capacidad predictiva
+sobre el conjunto de prueba (2019). Su RMSE es de 232,6 frente a 262,5,
+su MAE de 164,7 frente a 228,0 y su MAPE de 1,28\% frente a 1,79\%, lo
+que representa una reducción del error de entre el 11\% y el 28\% según
+la medida. En contrapartida, en enero de 2019 el valor real queda
+levemente por debajo del límite inferior del intervalo de predicción del
+95\% de este modelo, mientras que con el
+\(\text{SARIMA}(0,1,2)(0,1,1)_{12}\) los doce valores reales caen dentro
+de su intervalo.
+
+En cuanto al diagnóstico, los residuos de ambos modelos son compatibles
+con ruido blanco: el test de Portmanteau no rechaza la ausencia de
+autocorrelación y las FAC y FACP no muestran dependencia serial
+remanente, por lo que este análisis no permite distinguir entre ellos.
+Respecto de la normalidad, el test de Shapiro-Wilk la rechaza en ambos
+casos. En el \(\text{SARIMA}(0,1,2)(1,1,2)_{12}\) se identifican dos
+observaciones atípicas (marzo de 2000 y enero de 2003) y, al excluirlas,
+el p-value pasa de menos de 0,0001 a 0,038, de modo que la falta de
+normalidad se explica en gran parte por esos dos valores. En el
+\(\text{SARIMA}(0,1,2)(0,1,1)_{12}\) hay una única observación atípica
+(marzo de 2000) y el rechazo persiste al excluirla (p-value = 0,002), lo
+que indica una cola izquierda más pesada que la normal. La observación
+de marzo de 2000 se ubica al comienzo de la serie, por lo que podría
+estar influida por las condiciones iniciales de la diferenciación. La
+falta de normalidad afecta principalmente a los intervalos de
+predicción, que conviene tomar con reservas, y no a los pronósticos
+puntuales. Por último, en ambos modelos todos los coeficientes resultan
+significativos.
+
+En síntesis, el \(\text{SARIMA}(0,1,2)(1,1,2)_{12}\) es mejor en los
+criterios de información y en el error de pronóstico, tiene residuos
+algo más cercanos a la normalidad y no se diferencia del otro en la
+autocorrelación residual, por lo que se lo selecciona como modelo final.
+Aun así, la comparación predictiva se basa en una única ventana de 12
+meses, por lo que la mejora observada podría no repetirse en otros
+períodos.
+
+\section{Conclusión}\label{conclusiuxf3n}
+
+En este trabajo se analizó la serie mensual de muertes por ACV en
+Estados Unidos entre 1999 y 2018. La serie presenta una tendencia en
+forma de ``U'', con un descenso hasta alrededor de 2010 y un aumento
+posterior, y una estacionalidad anual marcada y estable, con máximos en
+diciembre y enero y mínimos entre junio y septiembre. Para volverla
+estacionaria se aplicó una diferencia regular y una estacional, y se
+trabajó con la serie original, sin transformar. El modelo seleccionado
+fue un \(\text{SARIMA}(0,1,2)(1,1,2)_{12}\), que reprodujo bien el
+patrón de 2019 con un MAPE de 1,28 \%. Las principales limitaciones son
+que los residuos no se ajustan a una distribución normal, por lo que los
+intervalos de predicción deben tomarse con reservas, y que la evaluación
+predictiva se basa en un solo año. Aun así, los resultados muestran que
+la mortalidad por ACV sigue un patrón estacional predecible, información
+que podría servir para anticipar los meses de mayor demanda en los
+sistemas de salud.
 
 
 
