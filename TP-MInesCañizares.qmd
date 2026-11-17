@@ -905,3 +905,14 @@ En síntesis, el $\text{SARIMA}(0,1,2)(1,1,2)_{12}$ es mejor en los criterios de
 
 En este trabajo se analizó la serie mensual de muertes por ACV en Estados Unidos entre 1999 y 2018. La serie presenta una tendencia en forma de "U", con un descenso hasta alrededor de 2010 y un aumento posterior, y una estacionalidad anual marcada y estable, con máximos en diciembre y enero y mínimos entre junio y septiembre. Para volverla estacionaria se aplicó una diferencia regular y una estacional, y se trabajó con la serie original, sin transformar. El modelo seleccionado fue un $\text{SARIMA}(0,1,2)(1,1,2)_{12}$, que reprodujo bien el patrón de 2019 con un MAPE de 1,28 %. Las principales limitaciones son que los residuos no se ajustan a una distribución normal, por lo que los intervalos de predicción deben tomarse con reservas, y que la evaluación predictiva se basa en un solo año. Aun así, los resultados muestran que la mortalidad por ACV sigue un patrón estacional predecible, información que podría servir para anticipar los meses de mayor demanda en los sistemas de salud. 
 
+# Bibliografía
+
+Cátedra de Series de Tiempo (2026). *Material teórico de la asignatura Series de Tiempo* [Apuntes y presentaciones de clase]. Licenciatura en Estadística, Facultad de Ciencias Económicas y Estadística, Universidad Nacional de Rosario.
+
+Centers for Disease Control and Prevention, National Center for Health Statistics. *Underlying Cause of Death, CDC WONDER Online Database*. Recuperado de https://wonder.cdc.gov/ucd-icd10.html 
+
+Hyndman, R. J., & Athanasopoulos, G. (2021). *Forecasting: principles and practice* (3.ª ed.). OTexts. https://otexts.com/fpp3/
+
+Kwiatkowski, D., Phillips, P. C. B., Schmidt, P., & Shin, Y. (1992). Testing the null hypothesis of stationarity against the alternative of a unit root. *Journal of Econometrics, 54*(1-3), 159-178.
+
+Wei, W. W. S. (2006). *Time series analysis: Univariate and multivariate methods* (2.ª ed.). Addison-Wesley.
